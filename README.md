@@ -27,3 +27,14 @@
 - [归档服务使用说明](BakArchiveService/README.md)
 - [归档性能测试报告](BakArchiveService/Performance-Test-Report.md)
 - [清理服务使用说明](BakCleanupService/README.md)
+
+## GitHub Release 发布
+
+发布 Release 时，请选择包含发布工作流的提交作为标签目标。GitHub Actions 会根据该标签的源码构建两个 64 位 Windows 安装器，并上传到该 Release 的 **Assets**：
+
+- `BakArchiveService-Setup.exe` 用于安装备份归档服务。
+- `BakCleanupService-Setup.exe` 用于安装备份清理服务。
+
+下载对应的 EXE 后直接双击，按提示完成安装。需要卸载时，在命令行运行对应 EXE 并加上 `/uninstall`。安装程序使用 Windows PowerShell 和 .NET Framework。
+
+如需在本地构建，运行 `.\build\Build-Installers.ps1 -OutputDirectory dist`。

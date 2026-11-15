@@ -1,0 +1,29 @@
+name: Publish Windows installers
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: windows-2025
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build both installers
+        shell: powershell
+        run: .\build\Build-Installers.ps1 -OutputDirectory dist
+      - name: Upload EXE installers
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload --repo "$env:GITHUB_REPOSITORY" "$env:RELEASE_TAG" dist/BakArchiveService-Setup.exe dist/BakCleanupService-Setup.exe
+          if ($LASTEXITCODE -ne 0) { throw "Release upload failed ($LASTEXITCODE)." }
